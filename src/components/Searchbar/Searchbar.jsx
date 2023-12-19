@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
 import { SearchHeader, Form, SearchButton, Input } from './Searchbar.styled';
-
 import { ReactComponent as SearchIcon } from '../../icons/search.svg';
 
 export class Searchbar extends Component {
   state = {
-    searchValue: '',
+    searchQuery: '',
   };
 
   handleChange = e => {
     this.setState({
-      searchValue: e.target.value,
+      searchQuery: e.target.value,
     });
   };
   render() {
@@ -22,7 +21,7 @@ export class Searchbar extends Component {
           </SearchButton>
 
           <Input
-            value={this.state.searchValue}
+            value={this.state.searchQuery}
             onChange={this.handleChange}
             type="text"
             autoComplete="off"
