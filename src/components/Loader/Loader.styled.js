@@ -5,7 +5,7 @@ export const LoaderWraper = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 5px;
-  padding: 40px;
+  padding: 20px;
 `;
 
 export const LoadText = styled.p`

@@ -3,6 +3,7 @@ import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Loader } from './Loader/Loader';
 import { fetchImagesWithQuery } from 'api/api';
+import { Button } from './Button/Button';
 
 export class App extends Component {
   state = {
@@ -10,6 +11,7 @@ export class App extends Component {
     gallery: [],
     isLoading: false,
     error: null,
+    page: 1,
   };
 
   async componentDidMount() {
@@ -17,10 +19,16 @@ export class App extends Component {
   }
 
   async componentDidUpdate(_, prevState) {
-    if (this.state.searchQuery !== prevState.searchQuery) {
+    if (
+      this.state.searchQuery !== prevState.searchQuery ||
+      this.state.page !== prevState.page
+    ) {
       this.setState({ isLoading: true });
       try {
-        const gallery = await fetchImagesWithQuery(this.state.searchQuery);
+        const gallery = await fetchImagesWithQuery(
+          this.state.searchQuery,
+          this.state.page
+        );
         this.setState({ gallery });
       } catch (error) {
         this.setState({ error });
@@ -34,7 +42,14 @@ export class App extends Component {
     console.log(searchQuery);
     this.setState({
       searchQuery,
+      page: 1,
+      gallery: [],
     });
+  };
+
+  handleLoadMore = () => {
+    console.log('click');
+    this.setState(prevState => ({ page: prevState.page + 1 }));
   };
 
   render() {
@@ -45,6 +60,9 @@ export class App extends Component {
 
         {!this.state.isLoading && (
           <ImageGallery searchResult={this.state.gallery} />
+        )}
+        {this.state.gallery.length > 0 && !this.state.isLoading && (
+          <Button onClick={this.handleLoadMore} title="Load more" />
         )}
       </div>
     );
