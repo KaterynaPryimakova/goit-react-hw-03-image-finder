@@ -13,14 +13,27 @@ export class App extends Component {
   };
 
   async componentDidMount() {
-    const gallery = await fetchImagesWithQuery(this.state.searchQuery);
-    this.setState({ gallery });
+    console.log('didMount');
   }
 
-  handleSubmit = e => {
-    e.preventDefault();
+  async componentDidUpdate(_, prevState) {
+    if (this.state.searchQuery !== prevState.searchQuery) {
+      this.setState({ isLoading: true });
+      try {
+        const gallery = await fetchImagesWithQuery(this.state.searchQuery);
+        this.setState({ gallery });
+      } catch (error) {
+        this.setState({ error });
+      } finally {
+        this.setState({ isLoading: false });
+      }
+    }
+  }
+
+  handleSubmit = searchQuery => {
+    console.log(searchQuery);
     this.setState({
-      searchQuery: e.target.value,
+      searchQuery,
     });
   };
 
@@ -28,8 +41,11 @@ export class App extends Component {
     return (
       <div>
         <Searchbar onSubmit={this.handleSubmit}></Searchbar>
-        <Loader />
-        <ImageGallery searchResult={[]} />
+        {this.state.isLoading && <Loader />}
+
+        {!this.state.isLoading && (
+          <ImageGallery searchResult={this.state.gallery} />
+        )}
       </div>
     );
   }
