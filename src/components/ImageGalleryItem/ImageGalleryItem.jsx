@@ -5,7 +5,6 @@ export const ImageGalleryItem = ({
   id,
   tags,
   webformatURL,
-  largeImageURL,
   handleOpenModal,
 }) => {
   return (

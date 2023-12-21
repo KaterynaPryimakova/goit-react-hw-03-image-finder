@@ -5,14 +5,15 @@ import { Loader } from './Loader/Loader';
 import { fetchImagesWithQuery } from 'api/api';
 import { Button } from './Button/Button';
 import { Modal } from './Modal/Modal';
+import { Report } from 'notiflix/build/notiflix-report-aio';
 
 export class App extends Component {
   state = {
     searchQuery: '',
-    gallery: null,
-    isLoading: false,
-    error: null,
     page: 1,
+    gallery: null,
+    error: null,
+    isLoading: false,
     isModalOpen: false,
     modalData: null,
   };
@@ -28,9 +29,18 @@ export class App extends Component {
           this.state.searchQuery,
           this.state.page
         );
-        this.setState({ gallery });
+        if (gallery.length === 0) {
+          Report.info(
+            'Ooops!',
+            'No results found for your search query.',
+            'Okay'
+          );
+        } else {
+          this.setState({ gallery });
+        }
       } catch (error) {
         this.setState({ error });
+        Report.failure('Error', `${error}`, 'Okay');
       } finally {
         this.setState({ isLoading: false });
       }
@@ -41,7 +51,7 @@ export class App extends Component {
     this.setState({
       searchQuery,
       page: 1,
-      gallery: [],
+      gallery: null,
     });
   };
 
@@ -64,27 +74,31 @@ export class App extends Component {
   };
 
   render() {
+    const { isLoading, gallery, isModalOpen, modalData } = this.state;
     return (
-      <div>
-        <Searchbar onSubmit={this.handleSubmit}></Searchbar>
-        {this.state.isLoading && <Loader />}
+      <>
+        <Searchbar onSubmit={this.handleSubmit} />
 
-        {!this.state.isLoading && (
+        {isLoading && <Loader />}
+
+        {!isLoading && (
           <ImageGallery
-            searchResult={this.state.gallery}
+            searchResult={gallery}
             handleOpenModal={this.handleOpenModal}
           />
         )}
-        {this.state.gallery && !this.state.isLoading && (
+
+        {gallery && gallery.length >= 12 && !isLoading && (
           <Button onClick={this.handleLoadMore} title="Load more" />
         )}
-        {this.state.isModalOpen && (
+
+        {isModalOpen && (
           <Modal
-            modalData={this.state.modalData}
+            modalData={modalData}
             handleCloseModal={this.handleCloseModal}
           />
         )}
-      </div>
+      </>
     );
   }
 }
