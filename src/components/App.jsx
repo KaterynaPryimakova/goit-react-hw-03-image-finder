@@ -4,14 +4,17 @@ import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Loader } from './Loader/Loader';
 import { fetchImagesWithQuery } from 'api/api';
 import { Button } from './Button/Button';
+import { Modal } from './Modal/Modal';
 
 export class App extends Component {
   state = {
     searchQuery: '',
-    gallery: [],
+    gallery: null,
     isLoading: false,
     error: null,
     page: 1,
+    isModalOpen: false,
+    modalData: null,
   };
 
   async componentDidMount() {
@@ -52,6 +55,16 @@ export class App extends Component {
     this.setState(prevState => ({ page: prevState.page + 1 }));
   };
 
+  handleOpenLargeImage = imageId => {
+    const selectedImage = this.state.gallery.find(
+      image => image.id === imageId
+    );
+    this.setState({
+      isModalOpen: true,
+      modalData: selectedImage,
+    });
+  };
+
   render() {
     return (
       <div>
@@ -59,11 +72,15 @@ export class App extends Component {
         {this.state.isLoading && <Loader />}
 
         {!this.state.isLoading && (
-          <ImageGallery searchResult={this.state.gallery} />
+          <ImageGallery
+            searchResult={this.state.gallery}
+            handleOpenLargeImage={this.handleOpenLargeImage}
+          />
         )}
-        {this.state.gallery.length > 0 && !this.state.isLoading && (
+        {this.state.gallery && !this.state.isLoading && (
           <Button onClick={this.handleLoadMore} title="Load more" />
         )}
+        {this.state.isModalOpen && <Modal modalData={this.state.modalData} />}
       </div>
     );
   }
