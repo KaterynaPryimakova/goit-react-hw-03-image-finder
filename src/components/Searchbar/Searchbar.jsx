@@ -8,7 +8,6 @@ export const Searchbar = ({ onSubmit }) => {
 
     const form = e.currentTarget;
     const searchQuery = form.elements.search.value;
-    console.dir(searchQuery);
     onSubmit(searchQuery);
   };
   return (

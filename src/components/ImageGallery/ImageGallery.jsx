@@ -2,7 +2,7 @@ import React from 'react';
 import { Gallery } from './ImageGallery.styled';
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 
-export const ImageGallery = ({ searchResult, handleOpenLargeImage }) => {
+export const ImageGallery = ({ searchResult, handleOpenModal }) => {
   return (
     <Gallery>
       {Array.isArray(searchResult) &&
@@ -14,7 +14,7 @@ export const ImageGallery = ({ searchResult, handleOpenLargeImage }) => {
               tags={tags}
               webformatURL={webformatURL}
               largeImageURL={largeImageURL}
-              handleOpenLargeImage={handleOpenLargeImage}
+              handleOpenModal={handleOpenModal}
             />
           );
         })}

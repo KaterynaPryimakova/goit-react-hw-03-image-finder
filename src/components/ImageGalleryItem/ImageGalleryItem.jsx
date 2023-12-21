@@ -6,10 +6,10 @@ export const ImageGalleryItem = ({
   tags,
   webformatURL,
   largeImageURL,
-  handleOpenLargeImage,
+  handleOpenModal,
 }) => {
   return (
-    <Item key={id} onClick={() => handleOpenLargeImage(id)}>
+    <Item key={id} onClick={() => handleOpenModal(id)}>
       <Image src={webformatURL} alt={tags} />
     </Item>
   );

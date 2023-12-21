@@ -17,10 +17,6 @@ export class App extends Component {
     modalData: null,
   };
 
-  async componentDidMount() {
-    console.log('didMount');
-  }
-
   async componentDidUpdate(_, prevState) {
     if (
       this.state.searchQuery !== prevState.searchQuery ||
@@ -42,7 +38,6 @@ export class App extends Component {
   }
 
   handleSubmit = searchQuery => {
-    console.log(searchQuery);
     this.setState({
       searchQuery,
       page: 1,
@@ -51,11 +46,10 @@ export class App extends Component {
   };
 
   handleLoadMore = () => {
-    console.log('click');
     this.setState(prevState => ({ page: prevState.page + 1 }));
   };
 
-  handleOpenLargeImage = imageId => {
+  handleOpenModal = imageId => {
     const selectedImage = this.state.gallery.find(
       image => image.id === imageId
     );
@@ -63,6 +57,10 @@ export class App extends Component {
       isModalOpen: true,
       modalData: selectedImage,
     });
+  };
+
+  handleCloseModal = () => {
+    this.setState({ isModalOpen: false });
   };
 
   render() {
@@ -74,13 +72,18 @@ export class App extends Component {
         {!this.state.isLoading && (
           <ImageGallery
             searchResult={this.state.gallery}
-            handleOpenLargeImage={this.handleOpenLargeImage}
+            handleOpenModal={this.handleOpenModal}
           />
         )}
         {this.state.gallery && !this.state.isLoading && (
           <Button onClick={this.handleLoadMore} title="Load more" />
         )}
-        {this.state.isModalOpen && <Modal modalData={this.state.modalData} />}
+        {this.state.isModalOpen && (
+          <Modal
+            modalData={this.state.modalData}
+            handleCloseModal={this.handleCloseModal}
+          />
+        )}
       </div>
     );
   }
