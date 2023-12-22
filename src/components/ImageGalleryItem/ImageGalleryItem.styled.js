@@ -13,6 +13,7 @@ export const ImageButton = styled.button`
   background-color: transparent;
   padding: 0;
   margin: 0;
+  cursor: pointer;
 `;
 
 export const Image = styled.img`

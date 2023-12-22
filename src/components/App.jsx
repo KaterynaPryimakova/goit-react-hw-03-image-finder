@@ -57,10 +57,7 @@ export class App extends Component {
     this.setState(prevState => ({ page: prevState.page + 1 }));
   };
 
-  handleOpenModal = imageId => {
-    const selectedImage = this.state.gallery.find(
-      image => image.id === imageId
-    );
+  handleOpenModal = selectedImage => {
     this.setState({
       isModalOpen: true,
       modalData: selectedImage,
@@ -84,7 +81,7 @@ export class App extends Component {
 
         {isLoading && <Loader />}
 
-        {gallery.length >= 12 && (
+        {!isLoading && gallery.length >= 12 && (
           <Button onClick={this.handleLoadMore} title="Load more" />
         )}
 

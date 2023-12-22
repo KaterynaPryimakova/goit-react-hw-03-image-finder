@@ -12,6 +12,7 @@ export const ImageGallery = ({ searchResult, handleOpenModal }) => {
               key={id}
               id={id}
               tags={tags}
+              largeImageURL={largeImageURL}
               webformatURL={webformatURL}
               handleOpenModal={handleOpenModal}
             />
