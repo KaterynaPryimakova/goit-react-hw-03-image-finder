@@ -2,7 +2,7 @@ import { styled } from 'styled-components';
 
 export const Btn = styled.button`
   display: block;
-  margin: 0 auto 14px;
+  margin: 14px auto;
   width: 140px;
   padding: 12px;
   color: #fff;

@@ -11,7 +11,7 @@ export class App extends Component {
   state = {
     searchQuery: '',
     page: 1,
-    gallery: null,
+    gallery: [],
     error: null,
     isLoading: false,
     isModalOpen: false,
@@ -19,28 +19,26 @@ export class App extends Component {
   };
 
   async componentDidUpdate(_, prevState) {
-    if (
-      this.state.searchQuery !== prevState.searchQuery ||
-      this.state.page !== prevState.page
-    ) {
-      this.setState({ isLoading: true });
+    const { searchQuery, page } = this.state;
+
+    if (searchQuery !== prevState.searchQuery || page !== prevState.page) {
+      this.setState({ isLoading: true, error: null });
       try {
-        const gallery = await fetchImagesWithQuery(
-          this.state.searchQuery,
-          this.state.page
-        );
+        const gallery = await fetchImagesWithQuery(searchQuery, page);
         if (gallery.length === 0) {
           Report.info(
             'Ooops!',
             'No results found for your search query.',
             'Okay'
           );
-        } else {
-          this.setState({ gallery });
+          return;
         }
+        this.setState(prevState => ({
+          gallery: [...prevState.gallery, ...gallery],
+        }));
       } catch (error) {
-        this.setState({ error });
-        Report.failure('Error', `${error}`, 'Okay');
+        this.setState({ error: error.message });
+        Report.failure('Error', `${error.message}`, 'Okay');
       } finally {
         this.setState({ isLoading: false });
       }
@@ -51,7 +49,7 @@ export class App extends Component {
     this.setState({
       searchQuery,
       page: 1,
-      gallery: null,
+      gallery: [],
     });
   };
 
@@ -79,16 +77,14 @@ export class App extends Component {
       <>
         <Searchbar onSubmit={this.handleSubmit} />
 
+        <ImageGallery
+          searchResult={gallery}
+          handleOpenModal={this.handleOpenModal}
+        />
+
         {isLoading && <Loader />}
 
-        {!isLoading && (
-          <ImageGallery
-            searchResult={gallery}
-            handleOpenModal={this.handleOpenModal}
-          />
-        )}
-
-        {gallery && gallery.length >= 12 && !isLoading && (
+        {gallery.length >= 12 && (
           <Button onClick={this.handleLoadMore} title="Load more" />
         )}
 
